@@ -1,12 +1,5 @@
-.TimelineSliders {
-  position: absolute;
-  bottom: 5%;
-  width: 100vw;
-}
-
 .slider-container {
-  display: inline-block;
-  width: 38%;
+  
 }
 
 .slider {

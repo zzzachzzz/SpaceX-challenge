@@ -1,52 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Timeline from './components/Timeline';
-import TimelineSliders from './components/TimelineSliders';
+import TimelineSlider from './components/TimelineSlider';
 
 export const maxDaysInPast = 180;
 
+export const allDates = ((daysInPast) => {
+  const dates = [];
+  const today = new Date();
+  let date;
+  for (let i = 0; i < daysInPast; i++) {
+    date = new Date(today);
+    date.setDate(date.getDate() - daysInPast + i);
+    dates.push(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`);
+  }
+  console.log(dates);
+  return dates;
+})(maxDaysInPast);
+
 export default function App() {
-  const [startRange, setStartRange] = useState(-135);  // Today minus 135 days
-  const [endRange, setEndRange] = useState(-45);  // Today minus 45 days
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
-
-  let allDates = useRef([]);
-
-  useEffect(() => {
-    computeDates(maxDaysInPast);
-    setDates();
-  }, []);
-
-  function setDates() {
-    setStartDate(allDates.current[maxDaysInPast + startRange]);
-    setEndDate(allDates.current[maxDaysInPast + endRange]);
-  }
-
   function onMouseUpSlider() {
+    console.log('onMouseUp');
     // fetch
-    setDates();
-  }
-
-  function computeDates(daysInPast) {
-    const today = new Date();
-    let date;
-    for (let i = 0; i < daysInPast; i++) {
-      date = new Date(today);
-      date.setDate(date.getDate() - daysInPast + i);
-      allDates.current.push(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`);
-    }
-    console.log(allDates.current);
-  }
-
-  /**
-   * @param {string} range - 'start' or 'end' range to update
-   * @param {number} value - new range value, representing a past date
-   */
-  function onRangeChange(range, value) {
-    range === 'start'
-      ? setStartRange(value)
-      : setEndRange(value);
   }
 
   function fetchLaunches(start, end) {
@@ -54,13 +29,14 @@ export default function App() {
 
   return (
     <div className="App">
-      <p>StartDate: {startDate}</p>
-      <p>EndDate: {endDate}</p>
-      <TimelineSliders
-        startRange={startRange}
-        endRange={endRange}
-        onRangeChange={onRangeChange}
-        onMouseUpSlider={onMouseUpSlider} />
+      <div style={{position: 'absolute', bottom: '5%', width: '50vw'}}>
+        <h3 style={{marginBottom: 0}}>SpaceX Launches Between</h3>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <TimelineSlider onMouseUpSlider={onMouseUpSlider} />
+          <span>{'&'}</span>
+          <TimelineSlider onMouseUpSlider={onMouseUpSlider} />
+        </div>
+      </div>
     </div>
   );
 }
